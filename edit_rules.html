@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <script src="plugins/jquery/jquery.min.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+    
+        <title>Outfit Generator</title>
+    
+        <!-- Custom fonts for this template-->
+        <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
+    
+        <!-- Custom styles for this template-->
+        <link href="css/sb-admin-2.min.css" rel="stylesheet">
+        <script src="outfitGenerator.js"></script>
+        <script src="https://cdn.logwork.com/widget/text.js"></script>
+        <link rel="stylesheet" href="outfitGenerator.css">
+        
+
+    </head>
+    <body id="page-top">
+
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+    
+            <!-- Sidebar -->
+        <ul class="navbar-nav bg-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center">
+                <div class="sidebar-brand-text mx-3">Outfit Generator</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">
+                    <span>Dashboard</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            
+
+            
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="generate_outfit.html">
+                    <span>Generate Outfit</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="saved_outfits.html">
+                    <span>Saved Outfits</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne">
+                    <span>Clothing</span>
+                </a>
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="add_clothes.html">Add Item</a>
+                        <a class="collapse-item" href="edit_clothes.html">Edit Items</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    
+                    <span>Rules</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="add_rule.html">Add Rule</a>
+                        <a class="collapse-item" href="edit_rules.html">Edit Rules</a>
+                    </div>
+                </div>
+            </li>
+
+            
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            
+
+            
+
+        </ul>
+        <!-- End of Sidebar -->
+    
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+    
+                <!-- Main Content -->
+                <div id="content">
+    
+                    
+    
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <br>
+                        
+                        <!-- Page Heading -->
+                        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h1 class="h3 mb-0 text-gray-800">Edit Rules</h1>
+                        </div>
+                        <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="border-collapse: collapse;">
+                                  <thead>
+                                    <tr>
+                                    </tr>
+                                  </thead>
+                                  <tbody id= "rulesList">
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="modalRules" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" >Edit Rule</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                              
+                              <div class="item form-group">
+            
+                                  <select class="form-control" name="rule_one" id="rule_one"></select>
+          
+                              </div>
+                              <div class="item form-group">
+            
+                                  <label>Doesn't go with</label>
+          
+                              </div>
+                              <div class="item form-group">
+            
+                                  <select class="form-control" name="rule_two" id="rule_two"></select>
+                                  
+                              </div>
+                            </form>
+                            <input id="rule_type" hidden></input>
+                          </div>
+          
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button onclick="saveEditRule()" type="button" id="buttonSaveRule" class="btn btn-primary">Save</button>
+                              </div>
+          
+                          </div>
+                      </div>
+                  </div>
+                  <div class="modal fade" id="modalPossibility" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" >Edit Rule</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                            
+                            <div class="item form-group">
+          
+                                <select class="form-control" name="possibility_one" id="possibility_one"></select>
+          
+                            </div>
+                            <div class="item form-group">
+          
+                                <label>Doesn't go with</label>
+          
+                            </div>
+                            <div class="item form-group">
+          
+                                <select class="form-control" name="possibility_two" id="possibility_two"></select>
+                                
+                            </div>
+                          </form>
+                          <input id="rule_type" hidden></input>
+                        </div>
+          
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              <button onclick="saveEditPossibility()" type="button" id="buttonSavePossibility" class="btn btn-primary">Save</button>
+                            </div>
+          
+                        </div>
+                    </div>
+                </div>
+                  </div>        
+    
+                            
+            </div>
+            <!-- End of Content Wrapper -->
+    
+        </div>
+        <!-- End of Page Wrapper -->
+    
+        
+    
+        <!-- Bootstrap core JavaScript-->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    
+        <!-- Core plugin JavaScript-->
+        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    
+        <!-- Custom scripts for all pages-->
+        <script src="js/sb-admin-2.min.js"></script>
+        <script>getRulesList();</script>
+        <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    
+    </body>
+</html>
