@@ -20,43 +20,80 @@ class Conta{
         // Compare the provided password with the stored hash using bcrypt
         return password_verify($password, $hashedPassword);
     }
+
+    function generateToken($email) {
+        // Generate a token containing user information (e.g., user ID)
+        $payload = [
+            'email' => $email,
+            'expiry' => time() + (86400 * 30)  // Expiry set to 30 days from now
+        ];
+    
+        // Generate a random token using md5(uniqid().rand(10000, 99999))
+        $randomToken = md5(uniqid().rand(10000, 99999));
+    
+        // Encode the payload and random token as a JSON web token (JWT)
+        $token = base64_encode(json_encode($payload) . '.' . $randomToken);
+    
+        return $token;
+    }
     
     function login($email, $password, $rememberMe) {
         global $conn;
         $result = "";
-    
+        
         $sql = "SELECT * FROM users WHERE email = '".$email."';";
         $fetched = $conn->query($sql);
         $flag = 0;
-    
+        $token = md5(uniqid().rand(10000, 99999));
+        $userId = 0;
+        
         if ($fetched->num_rows > 0) {
             $flag = 1;
             while ($row = $fetched->fetch_assoc()) {
                 $storedPassword = $row['password'];
-    
-                // Compare the login password with the stored password
+                $userId = $row['idUser'];
                 if ($password == $storedPassword) {
+                    $result = "Passwords match";
                     $flag = 2;
                     if ($rememberMe) {
-                        // Set a cookie to remember the logged-in user
-                        setcookie('loggedin_user', $email, time() + (86400 * 30), "/"); // 30 days
+                        $sql2 = "UPDATE users SET token = '".$token."' WHERE idUser = ".$userId.";";
+                        if(!mysqli_query($conn, $sql2)){
+                            $result = mysqli_error($conn);
+                        }
+                        $token = $this->generateToken($email);
+    
+                        // Set a cookie with the token (valid for 30 days)
+                        setcookie('loggedin_user', $email . ':' . $userId . ':' . $token, time() + (86400 * 30), "/"); // 30 days
                     }
-                
-                    // Store the email in session
-                    session_start();
-                    $_SESSION['loggedin_user'] = $email;
-                
-                    // Redirect to index.html
-                    header("Location: index.html");
-                    exit();
+                    
+                    
+                    
                 } else {
                     $result = "Password does not match";
                 }
-            }
+            } 
+        } else {
+                $result = "User not found";  // Set result for user not found
         }
+        
+        // Return the result and token in an array
+        $result_array = array("result" => $result, "token" => $token);
+        
+        // Encode the result array as JSON
+        $result_json = json_encode($result_array);
+        
+        // Check for JSON encoding errors
+        if ($result_json === false) {
+            $result_json = json_last_error_msg();
+        }
+        
+        // Return the JSON result
+        return $result_json;
+    }
     
-        return $result;
-    }    
+
+    
+    
     
     
     function register($nome, $apelido, $email, $password) {
@@ -73,7 +110,7 @@ class Conta{
             $hashedPassword = $this->hashPasswordWithBcrypt($password);
     
             $today = date("Y-m-d");
-            $sql = "INSERT INTO users VALUES(NULL, '".$email."', '".$hashedPassword."', '".$nome."', '".$apelido."', '".$today."', '2099-09-18', 1);";
+            $sql = "INSERT INTO users VALUES(NULL, '".$email."', '".$hashedPassword."', '".$nome."', '".$apelido."', '".$today."', '2099-09-18', 1, NULL);";
     
             if (mysqli_query($conn, $sql)) {
                 $result = "done";

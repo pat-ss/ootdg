@@ -208,24 +208,7 @@ if(isset($_SESSION['loggedin_user'])) {
         </div>
 
         <script>
-            // Function to get the value of a cookie by its name
-            function getCookie(name) {
-                const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-                return cookieValue ? decodeURIComponent(cookieValue.pop()) : null;
-            }
-        
-            document.addEventListener('DOMContentLoaded', function() {
-                const rememberedEmail = getCookie('remembered_email');
-                console.log('Remembered Email:', rememberedEmail);
-        
-                if (rememberedEmail) {
-                    const userEmail = decodeURIComponent(rememberedEmail);  // Decode the email
-                    console.log('Decoded Email:', userEmail);
-                    // Proceed with actions for the logged-in user based on userEmail
-                } else {
-                    window.location.href = 'login.php';
-                }
-            });
+            
         </script>
         
         

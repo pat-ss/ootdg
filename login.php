@@ -13,6 +13,66 @@
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="conta.js"></script>
+    <script>
+        // Function to check if a token is valid
+        // Function to check if a token is valid
+        function isTokenValid(token) {
+            if (!token) {
+                return false;  // Token doesn't exist or is empty
+            }
+
+            // Split the token into header, payload, and signature
+            const [header, payload, signature] = token.split('.');
+
+            try {
+                // Decode the payload
+                const decodedPayload = JSON.parse(atob(payload));
+
+                // Check the expiration time (in seconds since epoch)
+                const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+                const expirationTime = decodedPayload.exp * 1;  // Convert to number
+                const thirtyDaysInSeconds = 30 * 24 * 60 * 60;  // 30 days in seconds
+
+                // Check if the token is not expired and within the 30-day period
+                if (expirationTime >= currentTimeInSeconds && expirationTime <= currentTimeInSeconds + thirtyDaysInSeconds) {
+                    return true;  // Token is valid
+                }
+
+                return false;  // Token is either expired or outside the 30-day period
+            } catch (error) {
+                return false;  // Invalid token structure or payload
+            }
+        }
+
+        // Function to get the value of a cookie by its name
+        function getCookie(name) {
+            const cookieName = name + '=';
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i];
+                while (cookie.charAt(0) === ' ') {
+                    cookie = cookie.substring(1);
+                }
+                if (cookie.indexOf(cookieName) === 0) {
+                    return cookie.substring(cookieName.length, cookie.length);
+                }
+            }
+            return '';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const loggedInUserCookie = getCookie('loggedin_user');
+            if (loggedInUserCookie) {
+                const [email, userId, token] = loggedInUserCookie.split(':');
+                const isValidToken = isTokenValid(token);
+
+                if (isValidToken) {
+                    // Redirect to index.html if the token is valid
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+    </script>
 </head>
 
 <body class="bg-gradient-primary">
@@ -64,24 +124,6 @@
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
     <script src="js/sb-admin-2.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loggedInUserEmail = getCookie('remembered_email');
 
-            if (loggedInUserEmail) {
-                // Redirect to index.html with the user's email as a parameter
-                window.location.href = `index.html?email=${encodeURIComponent(loggedInUserEmail)}`;
-            }
-        });
+   
 
-        // Function to get the value of a cookie by its name
-        function getCookie(name) {
-            const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-            return cookieValue ? cookieValue.pop() : '';
-        }
-    </script>
-
-
-</body>
-
-</html>
