@@ -3,7 +3,7 @@
     $servidor = "localhost";
     $username = "root";
     $password = "";
-    $bdname = "outfitGenerator2";
+    $bdname = "outfitGenerator";
 
     $conn = new mysqli($servidor, $username, $password, $bdname);
     global $conn;

@@ -107,13 +107,10 @@ function login(event){
         },
         url: "contaModel.php",
         success: function(result){
-            console.log(result);
-            var obJSON = JSON.parse(result);
-            if(obJSON.result != "Passwords match"){
+            if(result != "Passwords match"){
                 alert(obJSON.result);
             } else {
-                localStorage.setItem('authToken', obJSON.token);
-                window.location.href = "index.html";
+                window.location.href = "index.php";
             }
         }
     })

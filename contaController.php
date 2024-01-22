@@ -40,13 +40,13 @@ class Conta{
     function login($email, $password, $rememberMe) {
         global $conn;
         $result = "";
-        
-        $sql = "SELECT * FROM users WHERE email = '".$email."';";
+    
+        $sql = "SELECT * FROM users WHERE email = '" . $email . "';";
         $fetched = $conn->query($sql);
         $flag = 0;
-        $token = md5(uniqid().rand(10000, 99999));
+        $token = md5(uniqid() . rand(10000, 99999));
         $userId = 0;
-        
+    
         if ($fetched->num_rows > 0) {
             $flag = 1;
             while ($row = $fetched->fetch_assoc()) {
@@ -55,41 +55,38 @@ class Conta{
                 if ($password == $storedPassword) {
                     $result = "Passwords match";
                     $flag = 2;
-                    if ($rememberMe) {
-                        $sql2 = "UPDATE users SET token = '".$token."' WHERE idUser = ".$userId.";";
-                        if(!mysqli_query($conn, $sql2)){
+                    /*if ($rememberMe) {
+                        $sql2 = "UPDATE users SET token = '" . $token . "' WHERE idUser = " . $userId . ";";
+                        if (!mysqli_query($conn, $sql2)) {
                             $result = mysqli_error($conn);
                         }
-                        $token = $this->generateToken($email);
+                        $token = generateToken($email);
     
                         // Set a cookie with the token (valid for 30 days)
                         setcookie('loggedin_user', $email . ':' . $userId . ':' . $token, time() + (86400 * 30), "/"); // 30 days
-                    }
-                    
-                    
+                    }*/
+    
+                    // Start a PHP session and store relevant information
+                    session_start();
+                    $_SESSION['user_id'] = $userId;
+                    $_SESSION['email'] = $email;
+    
                     
                 } else {
                     $result = "Password does not match";
                 }
-            } 
+            }
         } else {
-                $result = "User not found";  // Set result for user not found
+            $result = "User not found";  // Set result for user not found
         }
+    
+    
         
-        // Return the result and token in an array
-        $result_array = array("result" => $result, "token" => $token);
-        
-        // Encode the result array as JSON
-        $result_json = json_encode($result_array);
-        
-        // Check for JSON encoding errors
-        if ($result_json === false) {
-            $result_json = json_last_error_msg();
-        }
-        
+    
         // Return the JSON result
-        return $result_json;
+        return $result;
     }
+    
     
 
     
